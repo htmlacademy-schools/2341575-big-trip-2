@@ -10,17 +10,21 @@ export default class TripEventsPresenter {
     this.eventsList = new EventsView();
   }
 
-  init (tripContainer) {
+  init (tripContainer, pointsModel, editingFormModel, destinationsModel) {
     this.tripContainer = tripContainer;
+    this.pointsModel = pointsModel;
+    this.points = [...this.pointsModel.getPoints()];
+    this.destinations = destinationsModel.getDestinations();
 
     render(new SortingView(), this.tripContainer);
     render(this.eventsList, this.tripContainer);
-    render(new EditingFormView(), this.eventsList.getElement());
+    render(new EditingFormView(editingFormModel.getForm(), this.destinations),
+      this.eventsList.getElement());
 
-    for (let i = 0; i < 3; i++){
-      render(new PointView(), this.eventsList.getElement());
+    for (let i = 0; i < this.points.length; i++){
+      render(new PointView(this.points[i], this.destinations), this.eventsList.getElement());
     }
 
-    render(new NewFormView(), this.eventsList.getElement());
+    render(new NewFormView(this.destinations), this.eventsList.getElement());
   }
 }
